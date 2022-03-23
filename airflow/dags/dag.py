@@ -26,28 +26,26 @@ default_args = {
 def get_ecs_operator_args(taskDefinitionName, taskContainerName, entryFile, param):
     return dict(
         launch_type="FARGATE",
-        # The name of your task as defined in ECS
         task_definition=taskDefinitionName,
         platform_version="1.4.0",
-        # The name of your ECS cluster
         cluster=os.environ['CLUSTER'],
         network_configuration={
             'awsvpcConfiguration': {
                 'securityGroups': [os.environ['SECURITY_GROUP']],
                 'subnets': os.environ['SUBNETS'].split(","),
-                'assignPublicIp': "DISABLED"
+                'assignPublicIp': "DISABLED",
             }
         },
         overrides={
             'containerOverrides': [
                 {
                     'name': taskContainerName,
-                    'command': ["python", entryFile, param]
+                    'command': ["python", entryFile, param],
                 }
             ]
         },
         awslogs_group="FarFlowDagTaskLogs",
-        awslogs_stream_prefix="FarFlowDagTaskLogging/"+taskContainerName
+        awslogs_stream_prefix=f"FarFlowDagTaskLogging/{taskContainerName}",
     )
 
 oddTaskConfig = {
